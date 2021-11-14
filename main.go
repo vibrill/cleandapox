@@ -7,24 +7,114 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
-	excelize "github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/xuri/excelize/v2"
 )
 
 var (
 	listSGT [3]string
 )
 
-func proses(file string) {
-	f, err := excelize.OpenFile(file)
-	if err != nil {
-		fmt.Println(err)
+//column generator
+func genCoord() []string {
+	alfabet1 := []string{"", "A", "B"}
+	alfabet2 := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
+	var hasil []string
+	for _, x := range alfabet1 {
+		for _, y := range alfabet2 {
+			hasil = append(hasil, (x + y))
+		}
 	}
+	return hasil
+}
 
-	f.save()
+func proGT(path string) {
+	fmt.Println("processing file : " + path)
+	f, err := excelize.OpenFile(path)
+	if err != nil {
+		log.Fatal("ERROR", err.Error())
+	}
+	f.SetActiveSheet(0)
+	sheetName := f.GetSheetName(0)
+	kolom := genCoord()
+
+	for _, x := range kolom {
+		nilai, err := f.GetCellValue(sheetName, x+"5")
+		if err == nil {
+			nilai = strings.ReplaceAll(nilai, " ", "_")
+			nilai = strings.ToUpper(nilai)
+			f.SetCellValue(sheetName, x+"5", nilai)
+			fmt.Println(x+"5 ", nilai)
+		}
+	}
+	f.SetCellValue(sheetName, "AZ5", "YA")
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.Save()
+	fmt.Println("process done")
+}
+
+func proSis(path string) {
+	fmt.Println("processing file : " + path)
+	f, err := excelize.OpenFile(path)
+	if err != nil {
+		log.Fatal("ERROR", err.Error())
+	}
+	f.SetActiveSheet(0)
+	sheetName := f.GetSheetName(0)
+
+	//insert row
+	f.UnmergeCell(sheetName, "A1", "BN6")
+	f.InsertRow(sheetName, 7)
+	fmt.Println("row 7 inserted")
+
+	//set column name
+	kolom := genCoord()
+	for _, x := range kolom {
+		nilai, err := f.GetCellValue(sheetName, x+"5")
+		if err == nil {
+			nilai = strings.ReplaceAll(nilai, " ", "_")
+			nilai = strings.ToUpper(nilai)
+			f.SetCellValue(sheetName, x+"7", nilai)
+			fmt.Println(x+"7 ", nilai)
+		}
+	}
+	f.SetCellValue(sheetName, "Y7", "Y6"+"_AYAH")
+	f.SetCellValue(sheetName, "Z7", "Z6"+"_AYAH")
+	f.SetCellValue(sheetName, "AA7", "AA6"+"_AYAH")
+	f.SetCellValue(sheetName, "AB7", "AB6"+"_AYAH")
+	f.SetCellValue(sheetName, "AC7", "AC6"+"_AYAH")
+	f.SetCellValue(sheetName, "AD7", "AD6"+"_AYAH")
+	f.SetCellValue(sheetName, "AE7", "AE6"+"_IBU")
+	f.SetCellValue(sheetName, "AF7", "AF6"+"_IBU")
+	f.SetCellValue(sheetName, "AG7", "AG6"+"_IBU")
+	f.SetCellValue(sheetName, "AH7", "AH6"+"_IBU")
+	f.SetCellValue(sheetName, "AI7", "AI6"+"_IBU")
+	f.SetCellValue(sheetName, "AJ7", "AJ6"+"_IBU")
+	f.SetCellValue(sheetName, "AK7", "AK6"+"_WALI")
+	f.SetCellValue(sheetName, "AL7", "AL6"+"_WALI")
+	f.SetCellValue(sheetName, "AM7", "AM6"+"_WALI")
+	f.SetCellValue(sheetName, "AN7", "AN6"+"_WALI")
+	f.SetCellValue(sheetName, "AO7", "AO6"+"_WALI")
+	f.SetCellValue(sheetName, "AP7", "AP6"+"_WALI")
+	fmt.Println("row 7 named")
+
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+	f.RemoveRow(sheetName, 1)
+
+	f.Save()
+	fmt.Println("process done")
 }
 
 func main() {
+	//iini program utama
 	u, _ := os.UserHomeDir()
 	listSGT[0], listSGT[1], listSGT[2] = dapofiles.Cek()
 	//mendapatkan path desktop
@@ -89,6 +179,7 @@ func main() {
 		}
 		fmt.Printf("Bytes Written: %d\n", bytesWritten)
 	}
-	proses(ud + `/DapoSniff/` + listSGT[0]) //siswa
-
+	proSis(ud + `/DapoSniff/` + listSGT[0])
+	proGT(ud + `/DapoSniff/` + listSGT[1])
+	proGT(ud + `/DapoSniff/` + listSGT[2])
 }
