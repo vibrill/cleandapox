@@ -16,6 +16,10 @@ var (
 	listSGT [3]string
 )
 
+func main() {
+	Proses()
+}
+
 //column generator
 func genCoord() []string {
 	alfabet1 := []string{"", "A", "B"}
@@ -113,7 +117,7 @@ func proSis(path string) {
 	fmt.Println("process done")
 }
 
-func main() {
+func Proses() {
 	//iini program utama
 	u, _ := os.UserHomeDir()
 	listSGT[0], listSGT[1], listSGT[2] = dapofiles.Cek()
