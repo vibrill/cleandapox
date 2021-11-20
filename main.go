@@ -1,4 +1,4 @@
-package main
+package Proses
 
 import (
 	"dapofiles" // "github.com/vibrill/dapofiles"
@@ -16,10 +16,6 @@ var (
 	listSGT [3]string
 )
 
-func main() {
-	Proses()
-}
-
 //column generator
 func genCoord() []string {
 	alfabet1 := []string{"", "A", "B"}
@@ -34,7 +30,7 @@ func genCoord() []string {
 }
 
 func proGT(path string) {
-	fmt.Println("processing file : " + path)
+	//fmt.Println("cleaning file : " + path)
 	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Fatal("ERROR", err.Error())
@@ -49,7 +45,7 @@ func proGT(path string) {
 			nilai = strings.ReplaceAll(nilai, " ", "_")
 			nilai = strings.ToUpper(nilai)
 			f.SetCellValue(sheetName, x+"5", nilai)
-			fmt.Println(x+"5 ", nilai)
+			//fmt.Println(x+"5 ", nilai)
 		}
 	}
 	f.SetCellValue(sheetName, "AZ5", "YA")
@@ -58,11 +54,11 @@ func proGT(path string) {
 	f.RemoveRow(sheetName, 1)
 	f.RemoveRow(sheetName, 1)
 	f.Save()
-	fmt.Println("process done")
+	//fmt.Println("file GTK telah dirapikan")
 }
 
 func proSis(path string) {
-	fmt.Println("processing file : " + path)
+	//fmt.Println("cleaning file : " + path)
 	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Fatal("ERROR", err.Error())
@@ -73,7 +69,7 @@ func proSis(path string) {
 	//insert row
 	f.UnmergeCell(sheetName, "A1", "BN6")
 	f.InsertRow(sheetName, 7)
-	fmt.Println("row 7 inserted")
+	//fmt.Println("row 7 inserted")
 
 	//set column name
 	kolom := genCoord()
@@ -83,7 +79,7 @@ func proSis(path string) {
 			nilai = strings.ReplaceAll(nilai, " ", "_")
 			nilai = strings.ToUpper(nilai)
 			f.SetCellValue(sheetName, x+"7", nilai)
-			fmt.Println(x+"7 ", nilai)
+			//fmt.Println(x+"7 ", nilai)
 		}
 	}
 	f.SetCellValue(sheetName, "Y7", "Y6"+"_AYAH")
@@ -104,7 +100,7 @@ func proSis(path string) {
 	f.SetCellValue(sheetName, "AN7", "AN6"+"_WALI")
 	f.SetCellValue(sheetName, "AO7", "AO6"+"_WALI")
 	f.SetCellValue(sheetName, "AP7", "AP6"+"_WALI")
-	fmt.Println("row 7 named")
+	//fmt.Println("row 7 named")
 
 	f.RemoveRow(sheetName, 1)
 	f.RemoveRow(sheetName, 1)
@@ -114,11 +110,11 @@ func proSis(path string) {
 	f.RemoveRow(sheetName, 1)
 
 	f.Save()
-	fmt.Println("process done")
+	//fmt.Println("file siswa telah dirapikan")
 }
 
 func Proses() {
-	//iini program utama
+	//ini program utama
 	u, _ := os.UserHomeDir()
 	listSGT[0], listSGT[1], listSGT[2] = dapofiles.Cek()
 	//mendapatkan path desktop
@@ -140,9 +136,9 @@ func Proses() {
 	if err == nil {
 		err = os.Mkdir(ud+"/DapoSniff", 0755)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Folder ", ud+"/DapoSniff telah siap")
 		} else {
-			fmt.Println("Folder " + u + "/DapoSniff created")
+			fmt.Println("Membuat Folder " + u + "/DapoSniff")
 		}
 	}
 
@@ -177,11 +173,11 @@ func Proses() {
 		defer new.Close()
 
 		//copy file
-		bytesWritten, err := io.Copy(new, original)
+		_, err = io.Copy(new, original) // _ = bytesWritten
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Bytes Written: %d\n", bytesWritten)
+		//fmt.Printf("Bytes Written: %d\n", bytesWritten)
 	}
 	proSis(ud + `/DapoSniff/` + listSGT[0])
 	proGT(ud + `/DapoSniff/` + listSGT[1])
